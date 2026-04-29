@@ -1,0 +1,36 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: genesis-messenger-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: messenger_user
+      POSTGRES_PASSWORD: messenger_password
+      POSTGRES_DB: messenger_db
+    ports:
+      - "5433:5432"
+    volumes:
+      - genesis_messenger_postgres_data:/var/lib/postgresql/data
+    networks:
+      - genesis_messenger_network
+
+  pgadmin:
+    image: dpage/pgadmin4:8
+    container_name: genesis-messenger-pgadmin
+    restart: unless-stopped
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@messenger.local
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "5050:80"
+    depends_on:
+      - postgres
+    networks:
+      - genesis_messenger_network
+
+volumes:
+  genesis_messenger_postgres_data:
+
+networks:
+  genesis_messenger_network:
+    driver: bridge
